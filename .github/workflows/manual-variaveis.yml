@@ -1,0 +1,63 @@
+name: Deploy Manual com Variáveis
+
+on:
+  workflow_dispatch:
+    inputs:
+      ambiente:
+        description: "Ambiente de destino"
+        required: true
+        type: choice
+        default: staging
+        options:
+          - staging
+          - production
+      versao:
+        description: "Tag ou versão a publicar (ex.: v1.2.0)"
+        required: true
+        type: string
+      executar_migracoes:
+        description: "Executar migrações de base de dados antes do deploy?"
+        required: false
+        type: boolean
+        default: false
+      replicas:
+        description: "Número de réplicas"
+        required: false
+        type: number
+        default: 2
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # Associa o job ao Environment escolhido (ativa aprovações e secrets do ambiente)
+    environment: ${{ inputs.ambiente }}
+
+    steps:
+      - name: Obter código
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.versao }}
+
+      - name: Validar parâmetros
+        env:
+          AMBIENTE: ${{ inputs.ambiente }}
+          VERSAO: ${{ inputs.versao }}
+          REPLICAS: ${{ inputs.replicas }}
+        run: |
+          echo "A preparar deploy da versão $VERSAO para $AMBIENTE com $REPLICAS réplicas."
+
+      - name: Executar migrações
+        if: ${{ inputs.executar_migracoes == true }}
+        run: |
+          echo "A correr migrações na base de dados..."
+
+      - name: Executar deploy
+        env:
+          AMBIENTE: ${{ inputs.ambiente }}
+          VERSAO: ${{ inputs.versao }}
+          REPLICAS: ${{ inputs.replicas }}
+        run: |
+          echo "Deploy concluído: $VERSAO em $AMBIENTE ($REPLICAS réplicas)."
