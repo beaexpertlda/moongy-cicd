@@ -38,7 +38,11 @@ jobs:
     steps:
       - name: Obter código
         uses: actions/checkout@v4
-
+        
+      - name: Executar um comando ssh
+        uses: docker/build-push-action@v7.4.0
+        with:
+          add-hosts: # optional
 
       - name: Validar parâmetros
         env:
@@ -60,3 +64,15 @@ jobs:
           REPLICAS: ${{ inputs.replicas }}
         run: |
           echo "Deploy concluído: $VERSAO em $AMBIENTE ($REPLICAS réplicas)."
+          echo "
+
+
+  tests:
+    runs-on: ubuntu-latest
+    # Associa o job ao Environment escolhido (ativa aprovações e secrets do ambiente)
+    environment: ${{ inputs.ambiente }}
+
+    steps:
+      - name: Obter código
+        run:
+          echo "sdfsdfds"
