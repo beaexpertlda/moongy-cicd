@@ -38,8 +38,7 @@ jobs:
     steps:
       - name: Obter código
         uses: actions/checkout@v4
-        with:
-          ref: ${{ inputs.versao }}
+
 
       - name: Validar parâmetros
         env:
