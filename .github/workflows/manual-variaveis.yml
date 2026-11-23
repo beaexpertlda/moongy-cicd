@@ -69,6 +69,7 @@ jobs:
 
   tests:
     runs-on: ubuntu-latest
+    needs: deploy
     # Associa o job ao Environment escolhido (ativa aprovações e secrets do ambiente)
     environment: ${{ inputs.ambiente }}
 
